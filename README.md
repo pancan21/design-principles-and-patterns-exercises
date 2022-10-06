@@ -1,4 +1,4 @@
-# design-principles-exercises
+# Design Principles and Patterns Exercises
 
 This repository contains the exercises for the topics _design principles_ and _design patterns_ of the [RSE102](https://github.com/RSE-102/Lecture-Material) course. The corresponding lecture slides for the two topics can be found at
 [sustainable-simulation-software.gitlab.io/design-principles](https://sustainable-simulation-software.gitlab.io/course-material/slides/design_principles/index.html#/title-slide) and
