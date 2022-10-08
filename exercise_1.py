@@ -1,6 +1,6 @@
-# TODO: `Product` violates both the SRP & DRY principle.
+# TODO: `Product` violates the SRP principle.
 #       Identify where the violations occur and discuss/implement
-#       a better solution.
+#       a better solution. See exercise_1_hints.py if you need help
 from __future__ import annotations
 from decimal import Decimal
 

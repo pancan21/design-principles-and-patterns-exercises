@@ -11,7 +11,7 @@
 # from a string and do the checks that are currently in `Product`. Internally it can
 # still use use `Decimal`, but it may expose the necessary arithmetic operations on
 # money: addition/subtraction with another `Money`, multiplication/division with `float`
-# This way users do not have to know that `Decimal` is used under the hood. It is a
+# This way users do not have to know that `Decimal` is used under the hood. It is an
 # implementation detail.
 
 
@@ -64,10 +64,16 @@
 
 
 # Hint 7
-# The `reduced` function receives the price reduction as a float in percent, and it then
+# The `reduced` function receives the price reduction as an integer in percent, and it then
 # checks if the value is in the valid range for a reduction - between 0 and 100 since they
 # don't want to reduce prices by more than by 100%. In any other place in our system
 # where we want to deal with discounts, we would have to repeat such thing. To consolidate
 # this knowledge into a single place, and to be able to write more type-safe interfaces,
 # we may introduce a `Discount` class that can be constructed from a percentage, which we
 # then pass into the `reduced` function.
+
+
+# Hint 8
+# So far, discounts are represented as integers between 0 an 100, allowing only discounts
+# of "full" percentages. But one maybe also wants to be able to give discounts of e.g.
+# 20.5% or even 20.542123%. Thus, we may want to use floats over integers for discounts...
