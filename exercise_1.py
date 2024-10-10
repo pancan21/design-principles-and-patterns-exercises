@@ -1,14 +1,53 @@
-# TODO: `Product` violates the SRP principle.
-#       Identify where the violations occur and discuss/implement
-#       a better solution. See exercise_1_hints.py if you need help
 from __future__ import annotations
 from decimal import Decimal
+
+
+class Money:
+    def __init__(self, amount: str) -> None:
+        self._amount = Decimal(self._format_amount(amount))
+
+    def __repr__(self) -> str:
+        return str(self._amount)
+
+    def __add__(self, other: Money) -> Money:
+        return Money(str(self._amount + other._amount))
+
+    def __sub__(self, other: Money) -> Money:
+        return Money(str(self._amount - other._amount))
+
+    def __mul__(self, value: float) -> Money:
+        result = self._round_to_valid_amount(self._amount * Decimal(value))
+        return Money(str(result))
+
+    def __truediv__(self, value: float) -> Money:
+        result = self._round_to_valid_amount(self._amount / Decimal(value))
+        return Money(str(result))
+
+    def _format_amount(self, money_str: str) -> str:
+        if "." not in money_str:
+            return f"{money_str}.00"
+        elif len(money_str.split(".")[1]) != 2:
+            raise IOError("Too many decimal digits")
+        return money_str
+
+    def _round_to_valid_amount(self, value: Decimal) -> Decimal:
+        return value.quantize(Decimal("1.00"))
+
+
+class Discount:
+    def __init__(self, percentage: float) -> None:
+        assert 0 <= percentage <= 100, "Discount must be between 0 and 100"
+        self._percentage = percentage
+
+    def apply(self, price: Money) -> Money:
+        reduction = price * (self._percentage / 100)
+        return price - reduction
 
 
 class Product:
     def __init__(self, name: str, price: str) -> None:
         self._name = name
-        self._price = self._price_from_string(price)
+        self._price = Money(price)
 
     def __repr__(self) -> str:
         return f"Product: {self._name}, price: {self._price}"
@@ -18,26 +57,16 @@ class Product:
         return self._name
 
     @property
-    def price(self) -> Decimal:
+    def price(self) -> Money:
         return self._price
 
-    def reduced(self, percentage: int) -> Product:
-        assert percentage >= 0 and percentage <= 100
+    def reduced(self, percentage: float) -> Product:
         assert not self._is_reduced()
-        reduced_fraction = self._price_from_string(str(percentage))/Decimal("100")
-        reduction = self._price*reduced_fraction
-        reduction = reduction.quantize(Decimal("1.00"))
+        reduced_price = Discount(percentage).apply(self._price)
         return Product(
             name=f"{self._name} (reduced)",
-            price=str(self._price - reduction)
+            price=str(reduced_price)
         )
-
-    def _price_from_string(self, price_str: str) -> Decimal:
-        if "." not in price_str:
-            return Decimal(f"{price_str}.00")
-        elif len(price_str.split(".")[1]) != 2:
-            raise IOError("Too many decimal digits")
-        return Decimal(price_str)
 
     def _is_reduced(self) -> bool:
         return "(reduced)" in self._name
