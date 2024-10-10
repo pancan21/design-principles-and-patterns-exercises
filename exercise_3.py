@@ -59,8 +59,17 @@ class MyPoint:
 
 
 # TODO: Implement this adapter
-# class MyPointAdapter:
-#     pass
+class MyPointAdapter:
+    def __init__(self, my_point: MyPoint) -> None:
+        self._my_point = my_point
+    
+    @property
+    def x(self) -> float:
+        return self._my_point[0]
+    
+    @property
+    def y(self) -> float:
+        return self._my_point[1]
 
 if __name__ == "__main__":
     point_cloud = [
@@ -70,9 +79,7 @@ if __name__ == "__main__":
     ]
     bbox = get_bounding_box(point_cloud)
     print("Bounding box with default point implementation: ", bbox)
-
-    # TODO: make it possible to use `get_bounding_box` also with a list of
-    #       instances of `MyPoint` by implementing the adapter
+    
     my_points_impl_2 = [MyPoint((p.x, p.y)) for p in point_cloud]
     bbox = get_bounding_box([MyPointAdapter(p) for p in my_points_impl_2])
     print("Bounding box with MyPoint: ", bbox)
